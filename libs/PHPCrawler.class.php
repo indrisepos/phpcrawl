@@ -2116,6 +2116,10 @@ class PHPCrawler
     return $this->PageRequest->excludeLinkSearchDocumentSections($document_sections);
   }
   
+  public function setUrlCallbackFunction(&$obj, $method_name)
+  {
+    $this->PageRequest->setUrlCallbackFunction($obj, $method_name);
+  }
   /**
    * Sets the maximum crawling depth
    *

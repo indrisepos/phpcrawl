@@ -175,6 +175,7 @@ class PHPCrawlerHTTPRequest
   protected $request_gzip_content = false;
   
   protected $header_check_callback_function = null;
+  protected $url_callback_function = null;
   
   protected $content_buffer_size = 200000;
   protected $chunk_buffer_size = 20240;
@@ -208,10 +209,14 @@ class PHPCrawlerHTTPRequest
    */
   public function setUrl(PHPCrawlerURLDescriptor $UrlDescriptor)
   {
+    if ($this->url_callback_function != null) {
+      $this->UrlDescriptor = call_user_func($this->url_callback_function, $UrlDescriptor);
+    } else {
     $this->UrlDescriptor = $UrlDescriptor;
+    }
     
     // Split the URL into its parts
-    $this->url_parts = PHPCrawlerUtils::splitURL($UrlDescriptor->url_rebuild);
+    $this->url_parts = PHPCrawlerUtils::splitURL($this->UrlDescriptor->url_rebuild);
   }
   
   /**
@@ -331,6 +336,10 @@ class PHPCrawlerHTTPRequest
     
     $this->LinkFinder->aggressive_search = $mode;
     return true;
+  }
+  public function setUrlCallbackFunction(&$obj, $method_name)
+  {
+    $this->url_callback_function = array($obj, $method_name);
   }
   
   public function setHeaderCheckCallbackFunction(&$obj, $method_name)
